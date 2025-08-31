@@ -1,60 +1,107 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Customer Feedback') }}
+            {{ __('Product Management') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="max-w-md mx-auto">
-                        <h2 class="text-2xl font-bold mb-6 text-gray-800">Share Your Feedback</h2>
 
-                        <form class="space-y-6">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="John Doe">
-                            </div>
+                <div class="mb-6">
+                    @if (session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                            role="alert">
+                            <strong class="font-bold">{{ session('success') }}</strong>
+                        </div>
+                    @endif
 
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="you@example.com">
-                            </div>
+                    @if (session('deleted'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 py-3 rounded relative mb-4">
+                            <strong class="font-bold">{{ session('deleted') }}</strong>
+                        </div>
+                    @endif
 
+                    <h3 class="text-lg font-medium mb-4">Add New Product</h3>
+                    <form action="{{ route('product.store') }}" method="post">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="message" class="block text-sm font-medium text-gray-700">Your Feedback</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    rows="4"
-                                    required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="Your thoughts..."></textarea>
+                                <label for="name" class="block text-gray-700">Name</label>
+                                <input type="text" id="name" name="name"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             </div>
+                            <div>
+                                <label for="category" class="block text-gray-700">Category</label>
+                                <input type="text" id="category" name="category"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+                            <div>
+                                <label for="price" class="block text-gray-700">Price</label>
+                                <input type="number" id="price" name="price"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+                            <div>
+                                <label for="quantity" class="block text-gray-700">Stock Quantity</label>
+                                <input type="number" id="quantity" name="quantity"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+                            <div>
+                                <label for="description" class="block text-gray-700">Description</label>
+                                <textarea id="description" name="description" rows="5" cols="33"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                            </div>
+                            <div>
+                                <label for="manufacturer" class="block text-gray-700">Manufacturer</label>
+                                <input type="text" id="manufacturer" name="manufacturer"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add
+                                Product</button>
+                        </div>
+                    </form>
+                </div>
 
-                            <div>
-                                <button
-                                    type="submit"
-                                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    Submit Feedback
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="mt-8">
+                    <h3 class="text-lg font-medium mb-4">Product List</h3>
+                    <table class="min-m-full bg-white border" style="table-layout: fixed; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th class="py-2 border-b">#</th>
+                                <th class="py-2 border-b">Product Name</th>
+                                <th class="py-2 border-b">Category</th>
+                                <th class="py-2 border-b">Price</th>
+                                <th class="py-2 border-b">Stock Quantity</th>
+                                <th class="py-2 border-b">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-table">
+                            @foreach ($products as $key => $product)
+                                <tr>
+                                    <td class="py-2 border-b px-4 text-center">{{ $key + 1 }}</td>
+                                    <td class="py-2 border-b px-4 text-center">{{ $product->name }}</td>
+                                    <td class="py-2 border-b px-4 text-center">{{ $product->category }}</td>
+                                    <td class="py-2 border-b px-4 text-center">{{ $product->price }}</td>
+                                    <td class="py-2 border-b px-4 text-center">{{ $product->quantity }}</td>
+                                    <td class="py-2 border-b px-4 text-center">
+                                        <a href="{{ route('product.edit', $product->id) }}"
+                                            class="text-blue-500 hover:text-blue-700">Edit</a>
+                                        <form method="POST" action="{{ route('product.destroy', $product->id) }}"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-red-500 hover:text-red-700">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
