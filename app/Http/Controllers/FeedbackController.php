@@ -28,7 +28,7 @@ class FeedbackController extends Controller
 
         return response()->json([
             'message' => $response->successful()
-                ? 'Sumakses?' : 'Panong Sakses bi?',
+                ? 'Sankyuu, homie!' : 'Bruh sumthin wong here..',
             'success' => $response->successful()
         ], $response->status());
     }
